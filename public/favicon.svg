@@ -1,0 +1,21 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @media (prefers-color-scheme: light) {
+      .tent-fill { fill: #2563eb; }
+      .tent-stroke { stroke: #1e40af; }
+      .ground-fill { fill: #16a34a; }
+    }
+    @media (prefers-color-scheme: dark) {
+      .tent-fill { fill: #60a5fa; }
+      .tent-stroke { stroke: #3b82f6; }
+      .ground-fill { fill: #4ade80; }
+    }
+  </style>
+  <rect width="32" height="32" rx="4" fill="transparent"/>
+  <!-- Tent -->
+  <path class="tent-fill" d="M16 6L6 26H10L16 14L22 26H26L16 6Z" fill-opacity="0.9"/>
+  <path class="tent-stroke" d="M16 6L6 26H10L16 14L22 26H26L16 6Z" stroke-width="0.5" fill="none"/>
+  <!-- Ground line -->
+  <line x1="4" y1="26" x2="28" y2="26" class="ground-fill" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
+
