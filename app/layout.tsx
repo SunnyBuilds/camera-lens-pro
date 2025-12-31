@@ -4,45 +4,38 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { ConfigThemeProvider } from "@/components/config-theme-provider"
+import { siteConfig } from "@/lib/site.config"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('http://localhost:3000'),
+  metadataBase: new URL(siteConfig.seo.siteUrl),
   title: {
-    default: "Wild Nature Journey - Best Camping & Outdoor Gear Reviews 2025",
-    template: "%s | Wild Nature Journey",
+    default: siteConfig.seo.title,
+    template: siteConfig.seo.titleTemplate,
   },
-  description:
-    "Expert reviews and buying guides for camping and outdoor gear. Honest, in-depth analysis to help you make informed decisions. Updated 2025.",
-  keywords: [
-    'camping gear reviews',
-    'outdoor equipment',
-    'camping reviews',
-    'hiking gear',
-    'camping equipment',
-    'outdoor gear guide',
-    'best camping gear',
-  ],
-  authors: [{ name: 'Wild Nature Journey' }],
-  creator: 'Wild Nature Journey',
-  publisher: 'Wild Nature Journey',
+  description: siteConfig.seo.description,
+  keywords: siteConfig.seo.keywords,
+  authors: [{ name: siteConfig.seo.author }],
+  creator: siteConfig.seo.author,
+  publisher: siteConfig.seo.author,
   generator: "v0.app",
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'http://localhost:3000',
-    siteName: 'Wild Nature Journey',
-    title: 'Wild Nature Journey - Best Camping & Outdoor Gear Reviews',
-    description: 'Expert reviews and buying guides for camping and outdoor gear.',
+    url: siteConfig.seo.siteUrl,
+    siteName: siteConfig.brand.name,
+    title: siteConfig.seo.title,
+    description: siteConfig.seo.description,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Wild Nature Journey - Best Camping & Outdoor Gear Reviews',
-    description: 'Expert reviews and buying guides for camping and outdoor gear.',
-    creator: '@wildnaturejourney',
+    title: siteConfig.seo.title,
+    description: siteConfig.seo.description,
+    creator: siteConfig.seo.social.twitter,
   },
   robots: {
     index: true,
@@ -56,9 +49,9 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: 'http://localhost:3000',
+    canonical: siteConfig.seo.siteUrl,
     types: {
-      'application/rss+xml': 'http://localhost:3000/feed.xml',
+      'application/rss+xml': `${siteConfig.seo.siteUrl}/feed.xml`,
     },
   },
   icons: {
@@ -92,12 +85,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans antialiased`} suppressHydrationWarning>
-        <div className="flex min-h-screen flex-col">
-          <SiteHeader />
-          {children}
-          <SiteFooter />
-        </div>
-        <Analytics />
+        <ConfigThemeProvider>
+          <div className="flex min-h-screen flex-col">
+            <SiteHeader />
+            {children}
+            <SiteFooter />
+          </div>
+          <Analytics />
+        </ConfigThemeProvider>
       </body>
     </html>
   )

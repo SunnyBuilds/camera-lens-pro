@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { BookOpen, ArrowRight, Package } from "lucide-react"
-import { getAllChecklists, getAllReviews, Checklist, Review } from "@/lib/api"
+import { ArrowRight, Package } from "lucide-react"
+import { getAllReviews } from "@/lib/api"
 import { TableOfContents } from "@/components/table-of-contents"
 import { RelatedProductImage } from "@/components/related-product-image"
 
@@ -12,22 +12,7 @@ interface ReviewSidebarProps {
 }
 
 export function ReviewSidebar({ category, currentSlug }: ReviewSidebarProps) {
-  const allChecklists = getAllChecklists()
   const allReviews = getAllReviews()
-
-  // Get related checklist based on category
-  let relatedChecklist: Checklist | null = null
-  if (category) {
-    const categoryToChecklistMap: Record<string, string> = {
-      "Camp Essentials": "camp-essentials-guide",
-      "Cooking & Dining": "cooking-dining-guide",
-      "Gear & Electronics": "gear-electronics-guide",
-      "Safety & Navigation": "safety-navigation-guide",
-    }
-    
-    const checklistSlug = categoryToChecklistMap[category]
-    relatedChecklist = allChecklists.find(checklist => checklist.slug === checklistSlug) || null
-  }
 
   // Get related products from same category (high rated, excluding current)
   const relatedProducts = category
@@ -43,41 +28,6 @@ export function ReviewSidebar({ category, currentSlug }: ReviewSidebarProps) {
 
   return (
     <div className="space-y-6 lg:sticky lg:top-24">
-      {/* Related Checklist */}
-      {relatedChecklist && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-primary" />
-              Related Checklist
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {relatedChecklist.frontmatter.image && (
-                <RelatedProductImage
-                  src={relatedChecklist.frontmatter.image}
-                  alt={`${relatedChecklist.frontmatter.title} - Gear Checklist Preview`}
-                  className="w-full h-32 object-cover rounded-lg"
-                />
-              )}
-              <h4 className="font-semibold text-foreground leading-tight">
-                {relatedChecklist.frontmatter.title}
-              </h4>
-              <p className="text-sm text-muted-foreground line-clamp-2">
-                {relatedChecklist.frontmatter.description}
-              </p>
-              <Button asChild variant="outline" size="sm" className="w-full">
-                <Link href={`/checklists/${relatedChecklist.slug}`}>
-                  View Checklist
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Related Products */}
       {relatedProducts.length > 0 && (
         <Card>
@@ -157,10 +107,7 @@ export function ReviewSidebar({ category, currentSlug }: ReviewSidebarProps) {
               <Link href="/reviews">All Reviews</Link>
             </Button>
             <Button asChild variant="ghost" size="sm" className="w-full justify-start">
-              <Link href="/checklists">Gear Checklists</Link>
-            </Button>
-            <Button asChild variant="ghost" size="sm" className="w-full justify-start">
-              <Link href="/guides">Camping Guides</Link>
+              <Link href="/guides">Buying Guides</Link>
             </Button>
             {category && (
               <Button asChild variant="ghost" size="sm" className="w-full justify-start">

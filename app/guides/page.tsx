@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Calendar, Clock, ArrowRight } from "lucide-react"
 import { GuidesFilter } from "@/components/guides-filter"
+import { siteConfig } from "@/lib/site.config"
 
 export const metadata: Metadata = {
   title: "Camping Guides | Expert Outdoor Advice & Tips",
@@ -31,7 +32,11 @@ export const metadata: Metadata = {
 
 export default function GuidesPage() {
   const guides = getAllGuides()
-  const categories = getGuideCategories()
+
+  // 从配置文件获取页面文案和分类
+  const pageTitle = siteConfig.pages.guides.title
+  const pageDescription = siteConfig.pages.guides.description
+  const categories = siteConfig.pages.guides.categories
 
   return (
     <main className="flex-1">
@@ -40,11 +45,10 @@ export default function GuidesPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-              Camping Guides & Expert Advice
+              {pageTitle}
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Learn from experienced outdoor enthusiasts. Discover practical guides, essential skills, and expert advice
-              to enhance your camping adventures.
+              {pageDescription}
             </p>
           </div>
         </div>
@@ -89,16 +93,17 @@ export default function GuidesPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center bg-primary/5 rounded-lg p-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Ready to Gear Up?</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              {siteConfig.pages.guides.cta.title}
+            </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Check out our expert reviews and gear checklists to find the perfect equipment for your outdoor adventures.
+              {siteConfig.pages.guides.cta.description}
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Button asChild size="lg">
-                <Link href="/reviews">Browse Gear Reviews</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/checklists">View Gear Checklists</Link>
+                <Link href={siteConfig.pages.guides.cta.primaryButton.href}>
+                  {siteConfig.pages.guides.cta.primaryButton.text}
+                </Link>
               </Button>
             </div>
           </div>

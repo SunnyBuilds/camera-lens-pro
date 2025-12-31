@@ -2,9 +2,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { ProductCard } from "@/components/product-card"
-import { Search, Tent, UtensilsCrossed, ArrowRight, Backpack, Shield } from "lucide-react"
+import { Search, ArrowRight } from "lucide-react"
+import * as LucideIcons from "lucide-react"
 import Link from "next/link"
 import { getFeaturedProducts } from "@/lib/products-data"
+import { siteConfig } from "@/lib/site.config"
 
 export default function HomePage() {
   const featuredProducts = getFeaturedProducts(6)
@@ -16,11 +18,10 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 text-balance">
-                Find Your Perfect Outdoor Gear
+                {siteConfig.homepage.hero.title}
               </h1>
               <p className="text-lg md:text-xl text-primary-foreground/90 mb-8 leading-relaxed">
-                Expert reviews and honest recommendations for camping and outdoor equipment. Start your next adventure
-                with confidence.
+                {siteConfig.homepage.hero.subtitle}
               </p>
 
               {/* Search Bar */}
@@ -28,7 +29,7 @@ export default function HomePage() {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder="Search for tents, sleeping bags, stoves..."
+                  placeholder={siteConfig.homepage.hero.searchPlaceholder}
                   className="pl-12 h-14 text-base bg-background text-foreground"
                 />
                 <Button
@@ -57,100 +58,38 @@ export default function HomePage() {
         <section className="py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Shop by Category</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">{siteConfig.homepage.categories.title}</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                Browse our expertly curated camping gear collections
+                {siteConfig.homepage.categories.subtitle}
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {/* Camp Essentials */}
-              <Link href="/category/camp-essentials" className="group">
-                <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
-                  <CardContent className="p-6">
-                    <div className="flex flex-col items-center text-center">
-                      <div className="mb-4 rounded-full bg-primary/10 p-4 group-hover:bg-primary/20 transition-colors">
-                        <Tent className="h-8 w-8 text-primary" />
-                      </div>
-                      <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                        Camp Essentials
-                      </h3>
-                      <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                        Tents, sleeping bags, pads, and shelter basics
-                      </p>
-                      <div className="flex items-center text-sm font-medium text-primary group-hover:gap-2 transition-all">
-                        View Products <ArrowRight className="h-4 w-4 ml-1 group-hover:ml-0 transition-all" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-
-              {/* Cooking & Dining */}
-              <Link href="/category/cooking-dining" className="group">
-                <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
-                  <CardContent className="p-6">
-                    <div className="flex flex-col items-center text-center">
-                      <div className="mb-4 rounded-full bg-primary/10 p-4 group-hover:bg-primary/20 transition-colors">
-                        <UtensilsCrossed className="h-8 w-8 text-primary" />
-                      </div>
-                      <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                        Cooking & Dining
-                      </h3>
-                      <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                        Stoves, cookware, coolers, and water filters
-                      </p>
-                      <div className="flex items-center text-sm font-medium text-primary group-hover:gap-2 transition-all">
-                        View Products <ArrowRight className="h-4 w-4 ml-1 group-hover:ml-0 transition-all" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-
-              {/* Gear & Electronics */}
-              <Link href="/category/gear-electronics" className="group">
-                <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
-                  <CardContent className="p-6">
-                    <div className="flex flex-col items-center text-center">
-                      <div className="mb-4 rounded-full bg-primary/10 p-4 group-hover:bg-primary/20 transition-colors">
-                        <Backpack className="h-8 w-8 text-primary" />
-                      </div>
-                      <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                        Gear & Electronics
-                      </h3>
-                      <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                        Power, lighting, backpacks, and tech essentials
-                      </p>
-                      <div className="flex items-center text-sm font-medium text-primary group-hover:gap-2 transition-all">
-                        View Products <ArrowRight className="h-4 w-4 ml-1 group-hover:ml-0 transition-all" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-
-              {/* Safety & Navigation */}
-              <Link href="/category/safety-navigation" className="group">
-                <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
-                  <CardContent className="p-6">
-                    <div className="flex flex-col items-center text-center">
-                      <div className="mb-4 rounded-full bg-primary/10 p-4 group-hover:bg-primary/20 transition-colors">
-                        <Shield className="h-8 w-8 text-primary" />
-                      </div>
-                      <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
-                        Safety & Navigation
-                      </h3>
-                      <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                        GPS, first aid kits, and emergency equipment
-                      </p>
-                      <div className="flex items-center text-sm font-medium text-primary group-hover:gap-2 transition-all">
-                        View Products <ArrowRight className="h-4 w-4 ml-1 group-hover:ml-0 transition-all" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
+              {siteConfig.homepage.categories.items.map((category) => {
+                const IconComponent = (LucideIcons as any)[category.icon]
+                return (
+                  <Link key={category.slug} href={`/category/${category.slug}`} className="group">
+                    <Card className="h-full hover:shadow-lg transition-all duration-300 border-2 hover:border-primary">
+                      <CardContent className="p-6">
+                        <div className="flex flex-col items-center text-center">
+                          <div className="mb-4 rounded-full bg-primary/10 p-4 group-hover:bg-primary/20 transition-colors">
+                            {IconComponent && <IconComponent className="h-8 w-8 text-primary" />}
+                          </div>
+                          <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                            {category.name}
+                          </h3>
+                          <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                            {category.description}
+                          </p>
+                          <div className="flex items-center text-sm font-medium text-primary group-hover:gap-2 transition-all">
+                            View Products <ArrowRight className="h-4 w-4 ml-1 group-hover:ml-0 transition-all" />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                )
+              })}
             </div>
           </div>
         </section>
@@ -160,8 +99,8 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-center mb-12">
               <div>
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Featured Products</h2>
-                <p className="text-muted-foreground">Top-rated gear from real Amazon data</p>
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">{siteConfig.homepage.featuredProducts.title}</h2>
+                <p className="text-muted-foreground">{siteConfig.homepage.featuredProducts.subtitle}</p>
               </div>
               <Button variant="outline" asChild>
                 <Link href="/reviews">View All Reviews</Link>

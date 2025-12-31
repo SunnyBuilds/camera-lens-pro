@@ -1,11 +1,10 @@
-import { getAllReviews, getAllChecklists, getAllGuides } from '@/lib/api'
+import { getAllReviews, getAllGuides } from '@/lib/api'
 
 export const dynamic = 'force-static'
 
 export async function GET() {
   const baseUrl = 'http://localhost:3000'
   const reviews = getAllReviews()
-  const checklists = getAllChecklists()
   const guides = getAllGuides()
   
   // Combine and sort by date
@@ -17,19 +16,12 @@ export async function GET() {
       date: r.frontmatter.updatedDate || r.frontmatter.date,
       category: r.frontmatter.category || 'Reviews',
     })),
-    ...checklists.map(c => ({
-      title: c.frontmatter.title,
-      description: c.frontmatter.description,
-      url: `${baseUrl}/checklists/${c.slug}`,
-      date: c.frontmatter.updatedDate || c.frontmatter.date,
-      category: 'Gear Checklists',
-    })),
     ...guides.map(g => ({
       title: g.frontmatter.title,
       description: g.frontmatter.description,
       url: `${baseUrl}/guides/${g.slug}`,
       date: g.frontmatter.updatedDate || g.frontmatter.date,
-      category: g.frontmatter.category || 'Camping Guides',
+      category: g.frontmatter.category || 'Guides',
     })),
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 

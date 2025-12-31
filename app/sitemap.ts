@@ -1,14 +1,13 @@
 import { MetadataRoute } from 'next'
-import { getAllReviews, getAllChecklists, getAllGuides } from '@/lib/api'
+import { getAllReviews, getAllGuides } from '@/lib/api'
 import { getAllCategories } from '@/lib/products-data'
 
 export const dynamic = 'force-static'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'http://localhost:3000'
-  
+
   const reviews = getAllReviews()
-  const checklists = getAllChecklists()
   const guides = getAllGuides()
   const categories = getAllCategories()
   
@@ -24,12 +23,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/reviews`,
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/checklists`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly' as const,
       priority: 0.9,
     },
     {
@@ -55,23 +48,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Review pages
   const reviewPages = reviews.map((review) => ({
     url: `${baseUrl}/review/${review.slug}`,
-    lastModified: review.frontmatter.updatedDate 
+    lastModified: review.frontmatter.updatedDate
       ? new Date(review.frontmatter.updatedDate)
       : new Date(review.frontmatter.date),
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }))
-  
-  // Checklist pages
-  const checklistPages = checklists.map((checklist) => ({
-    url: `${baseUrl}/checklists/${checklist.slug}`,
-    lastModified: checklist.frontmatter.updatedDate
-      ? new Date(checklist.frontmatter.updatedDate)
-      : new Date(checklist.frontmatter.date),
-    changeFrequency: 'monthly' as const,
-    priority: 0.8,
-  }))
-  
+
   // Guide pages
   const guidePages = guides.map((guide) => ({
     url: `${baseUrl}/guides/${guide.slug}`,
@@ -90,6 +73,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }))
   
-  return [...staticPages, ...reviewPages, ...checklistPages, ...guidePages, ...categoryPages]
+  return [...staticPages, ...reviewPages, ...guidePages, ...categoryPages]
 }
 

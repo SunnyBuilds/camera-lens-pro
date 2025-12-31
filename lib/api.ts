@@ -2,78 +2,8 @@ import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
 
-const checklistsDirectory = path.join(process.cwd(), "content/checklists")
 const reviewsDirectory = path.join(process.cwd(), "content/reviews")
 const guidesDirectory = path.join(process.cwd(), "content/guides")
-
-// Checklists API (formerly Posts)
-export interface ChecklistFrontmatter {
-  title: string
-  date: string
-  description: string
-  updatedDate?: string
-  category?: string
-  image?: string
-  [key: string]: any
-}
-
-export interface Checklist {
-  slug: string
-  frontmatter: ChecklistFrontmatter
-  content: string
-}
-
-export function getChecklistSlugs(): string[] {
-  if (!fs.existsSync(checklistsDirectory)) {
-    return []
-  }
-  return fs
-    .readdirSync(checklistsDirectory)
-    .filter((file) => file.endsWith(".mdx"))
-    .map((file) => file.replace(/\.mdx$/, ""))
-}
-
-export function getChecklistBySlug(slug: string): Checklist | null {
-  const fullPath = path.join(checklistsDirectory, `${slug}.mdx`)
-  
-  if (!fs.existsSync(fullPath)) {
-    return null
-  }
-
-  const fileContents = fs.readFileSync(fullPath, "utf8")
-  const { data, content } = matter(fileContents)
-
-  return {
-    slug,
-    frontmatter: data as ChecklistFrontmatter,
-    content,
-  }
-}
-
-export function getAllChecklists(): Checklist[] {
-  const slugs = getChecklistSlugs()
-  const checklists = slugs
-    .map((slug) => getChecklistBySlug(slug))
-    .filter((checklist): checklist is Checklist => checklist !== null)
-    .sort((a, b) => {
-      const dateA = new Date(a.frontmatter.date).getTime()
-      const dateB = new Date(b.frontmatter.date).getTime()
-      return dateB - dateA
-    })
-
-  return checklists
-}
-
-export function getChecklistCategories(): string[] {
-  const checklists = getAllChecklists()
-  const categories = new Set<string>()
-  checklists.forEach((checklist) => {
-    if (checklist.frontmatter.category) {
-      categories.add(checklist.frontmatter.category)
-    }
-  })
-  return Array.from(categories).sort()
-}
 
 // Reviews API
 export interface ReviewFrontmatter {

@@ -3,16 +3,11 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Search, Menu, X } from "lucide-react"
+import * as LucideIcons from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
-
-const categories = [
-  { name: "Camp Essentials", slug: "camp-essentials" },
-  { name: "Cooking & Dining", slug: "cooking-dining" },
-  { name: "Gear & Electronics", slug: "gear-electronics" },
-  { name: "Safety & Navigation", slug: "safety-navigation" },
-]
+import { siteConfig } from "@/lib/site.config"
 
 export function SiteHeader() {
   const router = useRouter()
@@ -29,67 +24,92 @@ export function SiteHeader() {
     }
   }
 
+  // 动态渲染 Logo
+  const renderLogo = () => {
+    const { logo } = siteConfig.brand
+    const logoType = logo.type as "lucide" | "svg" | "image"
+
+    if (logoType === "lucide" && logo.icon) {
+      const IconComponent = (LucideIcons as any)[logo.icon]
+      if (IconComponent) {
+        return <IconComponent className="h-6 w-6 text-primary-foreground" />
+      }
+    }
+
+    if (logoType === "svg" && logo.svgPath) {
+      return (
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-6 w-6 text-primary-foreground"
+        >
+          <path d={logo.svgPath} />
+        </svg>
+      )
+    }
+
+    if (logoType === "image" && logo.imagePath) {
+      return (
+        <img
+          src={logo.imagePath}
+          alt={siteConfig.brand.name}
+          className="h-6 w-6"
+        />
+      )
+    }
+
+    // 默认 fallback
+    return (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="h-6 w-6 text-primary-foreground"
+      >
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
+    )
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-6 w-6 text-primary-foreground"
-              >
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-            </div>
-            <div className="hidden sm:block">
-              <span className="text-lg font-bold text-foreground">Wild Nature Journey</span>
-            </div>
-          </Link>
+        <div className="flex h-16 items-center">
+          {/* Logo - Left */}
+          <div className="flex-1 flex-shrink-0 lg:flex-1">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
+                {renderLogo()}
+              </div>
+              <div className="hidden sm:block">
+                <span className="text-lg font-bold text-foreground">{siteConfig.brand.name}</span>
+              </div>
+            </Link>
+          </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1">
-            <Link
-              href="/"
-              className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
-            >
-              Home
-            </Link>
-            <Link
-              href="/reviews"
-              className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
-            >
-              Reviews
-            </Link>
-            <Link
-              href="/checklists"
-              className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
-            >
-              Checklists
-            </Link>
-            <Link
-              href="/guides"
-              className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
-            >
-              Guides
-            </Link>
-            <Link
-              href="/about"
-              className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
-            >
-              About
-            </Link>
+          {/* Desktop Navigation - Center */}
+          <nav className="hidden lg:flex items-center gap-1 flex-shrink-0">
+            {siteConfig.navigation.main.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="px-4 py-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
-          {/* Search & Mobile Menu Toggle */}
-          <div className="flex items-center gap-2">
+          {/* Search & Mobile Menu Toggle - Right */}
+          <div className="flex items-center gap-2 flex-1 justify-end">
             <Button
               variant="ghost"
               size="icon"
@@ -130,41 +150,16 @@ export function SiteHeader() {
               {mobileMenuOpen && (
                 <div className="lg:hidden py-4 border-t border-border animate-in slide-in-from-top-2 duration-200">
                   <nav className="flex flex-col gap-4">
-                    <Link
-                      href="/"
-                      className="font-semibold text-foreground hover:text-primary transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Home
-                    </Link>
-                    <Link
-                      href="/reviews"
-                      className="font-semibold text-foreground hover:text-primary transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Reviews
-                    </Link>
-                    <Link
-                      href="/checklists"
-                      className="font-semibold text-foreground hover:text-primary transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Checklists
-                    </Link>
-                    <Link
-                      href="/guides"
-                      className="font-semibold text-foreground hover:text-primary transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Guides
-                    </Link>
-                    <Link
-                      href="/about"
-                      className="font-semibold text-foreground hover:text-primary transition-colors"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      About
-                    </Link>
+                    {siteConfig.navigation.main.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="font-semibold text-foreground hover:text-primary transition-colors"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
                   </nav>
                 </div>
               )}

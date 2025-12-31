@@ -1,3 +1,5 @@
+import { siteConfig } from './site.config'
+
 export interface Product {
   asin: string
   title: string
@@ -555,35 +557,23 @@ export const productsData: Product[] = [
   },
 ]
 
-export const categoryMap: Record<string, string> = {
-  "camp-essentials": "Camp Essentials",
-  "cooking-dining": "Cooking & Dining",
-  "gear-electronics": "Gear & Electronics",
-  "safety-navigation": "Safety & Navigation",
-}
+// 从配置文件动态生成分类映射
+export const categoryMap: Record<string, string> = Object.fromEntries(
+  siteConfig.homepage.categories.items.map(cat => [cat.slug, cat.name])
+)
 
-export const categoryInfo: Record<string, { name: string; description: string; icon: string }> = {
-  "camp-essentials": {
-    name: "Camp Essentials",
-    description: "Everything you need for shelter and sleep - tents, sleeping bags, pads, and hammocks",
-    icon: "tent",
-  },
-  "cooking-dining": {
-    name: "Cooking & Dining",
-    description: "Complete camp kitchen solutions from stoves and cookware to coolers and water filtration",
-    icon: "utensils",
-  },
-  "gear-electronics": {
-    name: "Gear & Electronics",
-    description: "Power stations, solar panels, lighting, backpacks, and camping furniture",
-    icon: "backpack",
-  },
-  "safety-navigation": {
-    name: "Safety & Navigation",
-    description: "Critical safety equipment including GPS devices, first aid kits, and communication tools",
-    icon: "shield",
-  },
-}
+// 从配置文件动态生成分类信息
+export const categoryInfo: Record<string, { name: string; description: string; icon: string }> =
+  Object.fromEntries(
+    siteConfig.homepage.categories.items.map(cat => [
+      cat.slug,
+      {
+        name: cat.name,
+        description: cat.description,
+        icon: cat.icon.toLowerCase(),
+      }
+    ])
+  )
 
 export function getProductsByCategory(categorySlug: string): Product[] {
   const categoryName = categoryMap[categorySlug]

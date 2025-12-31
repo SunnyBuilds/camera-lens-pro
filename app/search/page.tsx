@@ -2,8 +2,8 @@ import { ProductCard } from "@/components/product-card"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
-import { Search, BookOpen, CheckSquare } from "lucide-react"
-import { getAllReviews, getAllChecklists, getAllGuides } from "@/lib/api"
+import { Search, BookOpen } from "lucide-react"
+import { getAllReviews, getAllGuides } from "@/lib/api"
 
 export const dynamic = 'force-static'
 
@@ -15,7 +15,6 @@ export default function SearchPage({
   const query = searchParams.q || ""
 
   const allReviews = getAllReviews()
-  const allChecklists = getAllChecklists()
   const allGuides = getAllGuides()
 
   // Search in reviews
@@ -27,18 +26,6 @@ export default function SearchPage({
           review.frontmatter.description.toLowerCase().includes(searchLower) ||
           review.frontmatter.category?.toLowerCase().includes(searchLower) ||
           review.frontmatter.brand?.toLowerCase().includes(searchLower)
-        )
-      })
-    : []
-
-  // Search in checklists
-  const checklistResults = query
-    ? allChecklists.filter((checklist) => {
-        const searchLower = query.toLowerCase()
-        return (
-          checklist.frontmatter.title.toLowerCase().includes(searchLower) ||
-          checklist.frontmatter.description.toLowerCase().includes(searchLower) ||
-          checklist.content.toLowerCase().includes(searchLower)
         )
       })
     : []
@@ -55,7 +42,7 @@ export default function SearchPage({
       })
     : []
 
-  const totalResults = reviewResults.length + checklistResults.length + guideResults.length
+  const totalResults = reviewResults.length + guideResults.length
 
   return (
     <main className="flex-1">
@@ -75,7 +62,7 @@ export default function SearchPage({
                     {totalResults !== 1 ? "s" : ""} for "
                     <span className="font-semibold text-foreground">{query}</span>"
                     <span className="text-sm ml-2">
-                      ({reviewResults.length} review{reviewResults.length !== 1 ? "s" : ""}, {checklistResults.length} checklist{checklistResults.length !== 1 ? "s" : ""}, {guideResults.length} guide{guideResults.length !== 1 ? "s" : ""})
+                      ({reviewResults.length} review{reviewResults.length !== 1 ? "s" : ""}, {guideResults.length} guide{guideResults.length !== 1 ? "s" : ""})
                     </span>
                   </>
                 ) : (

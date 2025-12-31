@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { BookOpen, ArrowRight, Lightbulb } from "lucide-react"
-import { getAllChecklists, getAllGuides, Checklist, Guide } from "@/lib/api"
+import { ArrowRight, Lightbulb } from "lucide-react"
+import { getAllGuides } from "@/lib/api"
 import Image from "next/image"
 
 interface GuidesSidebarProps {
@@ -12,7 +12,6 @@ interface GuidesSidebarProps {
 }
 
 export function GuidesSidebar({ category, currentSlug }: GuidesSidebarProps) {
-  const allChecklists = getAllChecklists()
   const allGuides = getAllGuides()
 
   // Get related guides from same category (excluding current)
@@ -20,61 +19,8 @@ export function GuidesSidebar({ category, currentSlug }: GuidesSidebarProps) {
     .filter((guide) => guide.frontmatter.category === category && guide.slug !== currentSlug)
     .slice(0, 3)
 
-  // Get related checklist based on category
-  let relatedChecklist: Checklist | null = null
-  const categoryToChecklistMap: Record<string, string> = {
-    "Beginner Tips": "camp-essentials-guide",
-    "Seasonal Tips": "camp-essentials-guide",
-    "Safety & Survival": "safety-navigation-guide",
-    "Destination Guides": "camp-essentials-guide",
-  }
-
-  const checklistSlug = categoryToChecklistMap[category]
-  if (checklistSlug) {
-    relatedChecklist = allChecklists.find((checklist) => checklist.slug === checklistSlug) || null
-  }
-
   return (
     <div className="space-y-6 lg:sticky lg:top-24">
-      {/* Related Checklist */}
-      {relatedChecklist && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-primary" />
-              Related Checklist
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {relatedChecklist.frontmatter.image && (
-                <div className="relative w-full h-32 rounded-lg overflow-hidden">
-                  <Image
-                    src={relatedChecklist.frontmatter.image}
-                    alt={`${relatedChecklist.frontmatter.title} - Gear Checklist Preview`}
-                    fill
-                    className="object-cover"
-                    sizes="300px"
-                  />
-                </div>
-              )}
-              <h4 className="font-semibold text-foreground leading-tight">
-                {relatedChecklist.frontmatter.title}
-              </h4>
-              <p className="text-sm text-muted-foreground line-clamp-2">
-                {relatedChecklist.frontmatter.description}
-              </p>
-              <Button asChild variant="outline" size="sm" className="w-full">
-                <Link href={`/checklists/${relatedChecklist.slug}`}>
-                  View Checklist
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Related Guides */}
       {relatedGuides.length > 0 && (
         <Card>
@@ -136,9 +82,6 @@ export function GuidesSidebar({ category, currentSlug }: GuidesSidebarProps) {
           <div className="space-y-2">
             <Button asChild variant="ghost" size="sm" className="w-full justify-start">
               <Link href="/guides">All Guides</Link>
-            </Button>
-            <Button asChild variant="ghost" size="sm" className="w-full justify-start">
-              <Link href="/checklists">Gear Checklists</Link>
             </Button>
             <Button asChild variant="ghost" size="sm" className="w-full justify-start">
               <Link href="/reviews">Product Reviews</Link>
