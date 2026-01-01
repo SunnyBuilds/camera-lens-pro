@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { ProductCard } from "@/components/product-card"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Search } from "lucide-react"
 
 interface Review {
   slug: string
@@ -33,25 +35,44 @@ interface ReviewsFilterProps {
 export function ReviewsFilter({ reviews, categories }: ReviewsFilterProps) {
   const searchParams = useSearchParams()
   const router = useRouter()
-  
+
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [sortBy, setSortBy] = useState<string>("date")
+  const [searchQuery, setSearchQuery] = useState<string>("")
 
   // Initialize from URL params
   useEffect(() => {
     const categoryParam = searchParams.get("category")
+    const searchParam = searchParams.get("search")
+
     if (categoryParam && categories.some(cat => cat.value === categoryParam)) {
       setSelectedCategory(categoryParam)
     }
+
+    if (searchParam) {
+      setSearchQuery(searchParam)
+    }
   }, [searchParams, categories])
 
-  const filteredReviews =
+  // Filter by category
+  const categoryFilteredReviews =
     selectedCategory === "all"
       ? reviews
       : reviews.filter((review) => {
           const categoryLabel = categories.find(cat => cat.value === selectedCategory)?.label
           return review.frontmatter.category === categoryLabel
         })
+
+  // Filter by search query
+  const filteredReviews = searchQuery.trim()
+    ? categoryFilteredReviews.filter((review) => {
+        const query = searchQuery.toLowerCase()
+        const title = review.frontmatter.title.toLowerCase()
+        const description = review.frontmatter.description.toLowerCase()
+        const brand = review.frontmatter.brand?.toLowerCase() || ""
+        return title.includes(query) || description.includes(query) || brand.includes(query)
+      })
+    : categoryFilteredReviews
 
   const sortedReviews = [...filteredReviews].sort((a, b) => {
     const dateA = new Date(a.frontmatter.date).getTime()
@@ -72,8 +93,35 @@ export function ReviewsFilter({ reviews, categories }: ReviewsFilterProps) {
     router.push(newUrl, { scroll: false })
   }
 
+  // Update URL when search query changes
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value)
+    const params = new URLSearchParams(searchParams.toString())
+    if (value.trim()) {
+      params.set("search", value)
+    } else {
+      params.delete("search")
+    }
+    const newUrl = params.toString() ? `/reviews?${params.toString()}` : "/reviews"
+    router.push(newUrl, { scroll: false })
+  }
+
   return (
     <>
+      {/* Search Bar */}
+      <div className="mb-6">
+        <div className="relative max-w-2xl">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search products by name, brand, or description..."
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-12 h-12 text-base"
+          />
+        </div>
+      </div>
+
       {/* Filter and Sort Section */}
       <div className="border-2 border-border rounded-xl p-6 mb-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -111,6 +159,11 @@ export function ReviewsFilter({ reviews, categories }: ReviewsFilterProps) {
           <p className="text-muted-foreground">
             Showing <span className="font-semibold text-foreground">{sortedReviews.length}</span> of{" "}
             {reviews.length} products
+            {searchQuery.trim() && (
+              <span className="ml-2 text-sm">
+                matching "<span className="font-semibold text-foreground">{searchQuery}</span>"
+              </span>
+            )}
             {selectedCategory !== "all" && (
               <span className="ml-2 text-sm">
                 in <span className="font-semibold text-foreground">{categories.find(cat => cat.value === selectedCategory)?.label}</span>
@@ -138,10 +191,26 @@ export function ReviewsFilter({ reviews, categories }: ReviewsFilterProps) {
 
       {sortedReviews.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground text-lg">No reviews found in this category.</p>
-          <Button variant="outline" className="mt-4" onClick={() => handleCategoryChange("all")}>
-            View All Reviews
-          </Button>
+          <p className="text-muted-foreground text-lg mb-2">
+            {searchQuery.trim()
+              ? `No products found matching "${searchQuery}"`
+              : "No reviews found in this category."}
+          </p>
+          <p className="text-sm text-muted-foreground mb-4">
+            Try adjusting your search or filters
+          </p>
+          <div className="flex gap-3 justify-center">
+            {searchQuery.trim() && (
+              <Button variant="outline" onClick={() => handleSearchChange("")}>
+                Clear Search
+              </Button>
+            )}
+            {selectedCategory !== "all" && (
+              <Button variant="outline" onClick={() => handleCategoryChange("all")}>
+                View All Categories
+              </Button>
+            )}
+          </div>
         </div>
       )}
     </>
